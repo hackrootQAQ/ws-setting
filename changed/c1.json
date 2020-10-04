@@ -1,0 +1,13 @@
+{
+    "hidden": false,
+    "commandline": "C:/Program Files/PowerShell/7-preview/pwsh.exe -nologo",
+    "source": "Windows.Terminal.PowershellCore",
+    "startingDirectory": ".",
+    "fontFace": "Fira Code",
+    "fontSize": 11,
+    "historySize": 9001,
+    "padding": "5, 5, 20, 25",
+    "snapOnInput": true,
+    "useAcrylic": false,
+    "colorScheme": "Homebrew"
+}
