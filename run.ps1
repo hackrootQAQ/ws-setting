@@ -72,6 +72,9 @@ $CONFIG.profiles.list[$name2guid["PowerShell"][1]] = change $need_change $change
 $change_file = "./changed/c2.json"
 $CONFIG.schemes += @{}
 $CONFIG.schemes = add $CONFIG.schemes $change_file
+$need_change = $CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]]
+$change_file = "./changed/c3.json"
+$CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]] = change $need_change $change_file
 
 # Update.
 if ($CONFIG[0] -eq $null) {
