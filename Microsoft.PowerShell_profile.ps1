@@ -1,6 +1,7 @@
 Import-Module posh-git
 Import-Module oh-my-posh
-Set-Theme Lambda
+Set-Theme QAQ
+Set-Alias -Name gwmi -Value Get-WmiObject
 
 function ColorMatch {
 <#
@@ -110,13 +111,14 @@ Restart Windows Terminal. Short for rps.
 Restart-Powershell
 .EXAMPLE
 rps
-#>    
+#>  
+    # Check if under ADMIN or not. 
     $tmp = ([Security.Principal.WindowsPrincipal] `
         [Security.Principal.WindowsIdentity]::GetCurrent() `
     ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-    if ($tmp) { Start-Process wt -Verb runas }
-    else { Start-Process wt }
+    if ($tmp) { wt -Verb runas }
+    else { wt }
     
     Exit
 }
@@ -124,5 +126,7 @@ Set-Alias -Name rps -Value Restart-Powershell
 
 function Program-Check {
     param (
+
     )
 }
+Set-Alias -Name pch -Value Program-Check
