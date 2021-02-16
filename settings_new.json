@@ -1,0 +1,233 @@
+{
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+  "copyOnSelect": false,
+  "copyFormatting": false,
+  "profiles": {
+    "defaults": {},
+    "list": [
+      {
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "name": "Windows PowerShell",
+        "commandline": "powershell.exe",
+        "hidden": false
+      },
+      {
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "name": "命令提示符",
+        "commandline": "cmd.exe",
+        "hidden": false
+      },
+      {
+        "useAcrylic": false,
+        "fontFace": "Fira Code",
+        "colorScheme": "Homebrew",
+        "fontSize": 11,
+        "historySize": 9001,
+        "startingDirectory": ".",
+        "padding": "5, 5, 20, 25",
+        "snapOnInput": true,
+        "commandline": "C:/Program Files/PowerShell/7/pwsh.exe -nologo",
+        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+        "hidden": false,
+        "name": "PowerShell",
+        "source": "Windows.Terminal.PowershellCore"
+      },
+      {
+        "useAcrylic": false,
+        "fontFace": "Fira Code",
+        "colorScheme": "Homebrew",
+        "fontSize": 11,
+        "historySize": 9001,
+        "startingDirectory": ".",
+        "padding": "5, 5, 20, 25",
+        "snapOnInput": true,
+        "guid": "{c6eaf9f4-32a7-5fdc-b5cf-066e8a4b1e40}",
+        "hidden": false,
+        "name": "Ubuntu-18.04",
+        "source": "Windows.Terminal.Wsl"
+      },
+      {
+        "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+        "hidden": false,
+        "name": "Azure Cloud Shell",
+        "source": "Windows.Terminal.Azure"
+      }
+    ]
+  },
+  "schemes": [
+    {},
+    {
+      "black": "#000000",
+      "brightYellow": "#e5e500",
+      "purple": "#b200b2",
+      "cyan": "#00a6b2",
+      "blue": "#6666e9",
+      "white": "#bfbfbf",
+      "brightRed": "#e50000",
+      "brightWhite": "#e5e5e5",
+      "brightBlue": "#0000ff",
+      "yellow": "#999900",
+      "brightCyan": "#00e5e5",
+      "red": "#FC5275",
+      "brightBlack": "#666666",
+      "background": "#283033",
+      "green": "#00a600",
+      "name": "Homebrew",
+      "brightPurple": "#e500e5",
+      "foreground": "#00ff00",
+      "brightGreen": "#00d900"
+    },
+    {
+      "background": "#283033",
+      "brightBlue": "#0000ff",
+      "foreground": "#00ff00",
+      "purple": "#b200b2",
+      "green": "#00a600",
+      "name": "Homebrew",
+      "brightGreen": "#00d900",
+      "brightYellow": "#e5e500",
+      "blue": "#6666e9",
+      "brightBlack": "#666666",
+      "white": "#bfbfbf",
+      "red": "#FC5275",
+      "cyan": "#00a6b2",
+      "brightPurple": "#e500e5",
+      "yellow": "#999900",
+      "brightCyan": "#00e5e5",
+      "black": "#000000",
+      "brightRed": "#e50000",
+      "brightWhite": "#e5e5e5"
+    },
+    {
+      "background": "#283033",
+      "brightBlue": "#0000ff",
+      "foreground": "#00ff00",
+      "purple": "#b200b2",
+      "green": "#00a600",
+      "name": "Homebrew",
+      "brightGreen": "#00d900",
+      "brightYellow": "#e5e500",
+      "blue": "#6666e9",
+      "brightBlack": "#666666",
+      "white": "#bfbfbf",
+      "red": "#FC5275",
+      "cyan": "#00a6b2",
+      "brightPurple": "#e500e5",
+      "yellow": "#999900",
+      "brightCyan": "#00e5e5",
+      "black": "#000000",
+      "brightRed": "#e50000",
+      "brightWhite": "#e5e5e5"
+    },
+    {
+      "black": "#000000",
+      "brightRed": "#e50000",
+      "yellow": "#999900",
+      "name": "Homebrew",
+      "brightBlue": "#0000ff",
+      "white": "#bfbfbf",
+      "foreground": "#00ff00",
+      "green": "#00a600",
+      "brightWhite": "#e5e5e5",
+      "blue": "#6666e9",
+      "background": "#283033",
+      "cyan": "#00a6b2",
+      "brightCyan": "#00e5e5",
+      "brightBlack": "#666666",
+      "purple": "#b200b2",
+      "red": "#FC5275",
+      "brightPurple": "#e500e5",
+      "brightYellow": "#e5e500",
+      "brightGreen": "#00d900"
+    },
+    {
+      "purple": "#b200b2",
+      "brightRed": "#e50000",
+      "black": "#000000",
+      "brightPurple": "#e500e5",
+      "background": "#283033",
+      "green": "#00a600",
+      "cyan": "#00a6b2",
+      "red": "#FC5275",
+      "yellow": "#999900",
+      "name": "Homebrew",
+      "foreground": "#00ff00",
+      "white": "#bfbfbf",
+      "brightWhite": "#e5e5e5",
+      "brightGreen": "#00d900",
+      "brightBlack": "#666666",
+      "brightYellow": "#e5e500",
+      "blue": "#6666e9",
+      "brightBlue": "#0000ff",
+      "brightCyan": "#00e5e5"
+    },
+    {
+      "brightBlue": "#0000ff",
+      "brightRed": "#e50000",
+      "yellow": "#999900",
+      "white": "#bfbfbf",
+      "background": "#283033",
+      "brightWhite": "#e5e5e5",
+      "purple": "#b200b2",
+      "foreground": "#00ff00",
+      "blue": "#6666e9",
+      "brightCyan": "#00e5e5",
+      "green": "#00a600",
+      "brightYellow": "#e5e500",
+      "red": "#FC5275",
+      "name": "Homebrew",
+      "brightGreen": "#00d900",
+      "cyan": "#00a6b2",
+      "brightBlack": "#666666",
+      "black": "#000000",
+      "brightPurple": "#e500e5"
+    },
+    {
+      "yellow": "#999900",
+      "name": "Homebrew",
+      "background": "#283033",
+      "black": "#000000",
+      "white": "#bfbfbf",
+      "brightRed": "#e50000",
+      "brightBlue": "#0000ff",
+      "brightYellow": "#e5e500",
+      "brightPurple": "#e500e5",
+      "brightWhite": "#e5e5e5",
+      "purple": "#b200b2",
+      "red": "#FC5275",
+      "foreground": "#00ff00",
+      "brightBlack": "#666666",
+      "blue": "#6666e9",
+      "brightCyan": "#00e5e5",
+      "cyan": "#00a6b2",
+      "green": "#00a600",
+      "brightGreen": "#00d900"
+    }
+  ],
+  "actions": [
+    {
+      "command": {
+        "action": "copy",
+        "singleLine": false
+      },
+      "keys": "ctrl+c"
+    },
+    {
+      "command": "paste",
+      "keys": "ctrl+v"
+    },
+    {
+      "command": "find",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "auto",
+        "splitMode": "duplicate"
+      },
+      "keys": "alt+shift+d"
+    }
+  ]
+}

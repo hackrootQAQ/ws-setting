@@ -1,85 +1,129 @@
+# Load basic setting.
+using module ".\CONSTANT.psm1"
+$CustomSetting = New-Object SET
+# Set whether to show debug information or not.
+if ("-d" -in $args) { $DebugPreference = "Continue" }
+
 # Update profile.
-Copy-Item "./Microsoft.PowerShell_profile.ps1" $PROFILE
-if ($args[0] -eq "-p") {exit}
+Copy-Item $CustomSetting.WT_SETUP_FILE $PROFILE
+<# Add .\Modules to $env:PSModulePath. #>
+$AddOrder = "`$env:PSModulePath += " + """;" + $CustomSetting.PS_MODULE_PATH + """`n"
+$AddOrder + $(Get-Content $PROFILE -Raw) | Set-Content $PROFILE
+<# Add .\base\Themes to posh theme location. #>
+$AddOrder = "`$ThemeSettings.MyThemesLocation = """ + $CustomSetting.POSH_THEME_PATH + """`n"
+$(Get-Content $PROFILE -Raw) + $AddOrder | Set-Content $PROFILE
+<# Change setting name. #>
+$AddOrder = "Set-Theme " + $CustomSetting.POSH_THEME_NAME + "`n"
+$(Get-Content $PROFILE -Raw) + $AddOrder | Set-Content $PROFILE
+Write-Debug "WT setting updated."
+if ("-u" -in $args) { exit }
 
 # Install package.
-$pkg_list = @("PSReadLine", "posh-git", "oh-my-posh")
-foreach($pkg in $pkg_list) {
-    If(Get-Module -ListAvailable $pkg) {
-        -Join("The module ", $pkg, " exists.") | Write-Host
-    } Else {
-        -Join("Installing module ", $pkg, "...") | Write-Host -NoNewline
+$PkgList = @("PSReadLine", "posh-git", "oh-my-posh")
+foreach($pkg in $PkgList) {
+    if (Get-Module -ListAvailable $pkg) {
+        -Join("The module ", $pkg, " exists.") | Write-Debug
+    } else {
+        -Join("Installing module ", $pkg, "...") | Write-Debug -NoNewline
         Install-Module $pkg -Force
-        Write-Host "Finished."
-    }    
+    }
 }
 
 # Get setting path.
 $prefix = -Join("C:\Users\", $env:USERNAME, "\AppData\Local\Packages\")
 $suffix = "\LocalState\"
-$setting_loc = Dir $prefix | ? {$_ -is [System.IO.DirectoryInfo] -and $_.Name -like "Microsoft.WindowsTerminal_*"} `
+$SettingLocation = Dir $prefix | ? {$_ -is [System.IO.DirectoryInfo] -and $_.Name -like "Microsoft.WindowsTerminal_*"} `
     | Foreach-Object {$_.Name}
-$setting_loc = -Join($prefix, $setting_loc, $suffix)
+$SettingLocation = -Join($prefix, $SettingLocation, $suffix)
+Write-Debug "WT setting path got."
 
 # Get map from name to guid.
-$setting_file_loc = -Join($setting_loc, "settings.json")
-$CONFIG = Get-Content $setting_file_loc | ConvertFrom-Json
+$SettingFileLocation = -Join($SettingLocation, "settings.json")
+try { $CONFIG = Get-Content $SettingFileLocation -Raw | ConvertFrom-Json }
+catch { 
+    Write-Debug "Can't parse the original setting, try reinstall WT please." 
+    exit
+}
 $name2guid = @{}
-For ($i = 0; $i -lt $CONFIG.profiles.list.Count; $i = $i + 1) { 
+for ($i = 0; $i -lt $CONFIG.profiles.list.Count; $i = $i + 1) { 
     $_ = $CONFIG.profiles.list[$i]
-    $name2guid[$_.name] = @($_.guid, $i)
+    $name2guid[$_.Name] = @($_.guid, $i)
 }
 
-# Backup.
-$ID = $env:USERDOMAIN
-$ID_path = -Join("./backup/", $ID, "/")
-$null = New-Item -Path "./backup" -Name $ID -Type Directory -Force 
-Copy-Item $setting_file_loc $(-Join($ID_path, $(Get-Date -Format "MM_dd_yyyy_HH_mm_ss"), "settings.json"))
-$name2guid | ConvertTo-Json | Out-File $(-Join($ID_path, "name2guid.json")) 
-
-function change {
-    param (
-        $need_change,
-        $change_file
-    )
-    $tmp_c = Get-Content $change_file | ConvertFrom-Json -AsHashtable
-    #echo $($need_change | Get-Member -MemberType Method)
-    #echo $($need_change | Get-Member -MemberType Properties)
-    $name_list = $need_change.psobject.Properties.name
-    foreach ($name in $tmp_c.keys) {
-        if ($name -in $name_list) {
-            $need_change.$name = $tmp_c[$name]
-        } else {
-            $need_change | Add-Member -MemberType NoteProperty -Name $name -Value $tmp_c[$name]
-        }
+# Backup. `-nb` Set whether to backup or not.
+if ("-nb" -in $args) { Write-Debug "No backup." }
+else {
+    $COMID = $env:USERDOMAIN
+    $BackupPath = "{0}\{1}\" -f $CustomSetting.N2G_BACKUP_PATH, $COMID
+    if (-not $(Test-Path $BackupPath)) {
+        <# Hidden the output of command `New-Item`. #>
+        $null = New-Item -Path $BackupPath -Type Directory -Force 
     }
-    return $need_change
+    Copy-Item $SettingFileLocation $($BackupPath + $(Get-Date -Format "MM_dd_yyyy_HH_mm_ss") + "settings.json")
+    $name2guid | ConvertTo-Json | Out-File $($BackupPath + "name2guid.json") 
+    Write-Debug "Backuped."
 }
-function add {
-    param (
-        $need_change,
-        $change_file 
-    )
-    $tmp_c = Get-Content $change_file | ConvertFrom-Json -AsHashtable
-    $need_change += $tmp_c
-    return $need_change
+
+function change($origin, $new) {
+    $content = $new | ConvertFrom-Json -AsHashtable
+    $NameList = $origin.PSobject.Properties.Name
+    $ret = New-Object PSObject
+    foreach ($name in ($content.Keys + $NameList)) {
+        if ($name -in $content.Keys) { 
+            $ret | Add-Member -MemberType NoteProperty -Name $name -Value $content[$name] -Force
+        } else { $ret | Add-Member -MemberType NoteProperty -Name $name -Value $origin.$name -Force }
+    }
+    return $ret
 }
+function add($origin, $new) {
+    $ret = $origin + $($new | ConvertFrom-Json -AsHashtable)
+    return $ret
+}
+
+# Read wt default setting -> Change setting -> Update.
+$WTDefaultSetting = $(iex $(Get-Content $CustomSetting.DEFAULT_SETTING -Raw))
+foreach ($wtds in $WTDefaultSetting) {
+    $ConfigVarName = "`$CONFIG" + $wtds.Name        
+    try {
+        if ($wtds.Type -eq "CHANGE") {
+            iex $("{0} = change {0} {1}" -f $ConfigVarName, "`$wtds.Value") 
+        } elseif ($wtds.Type -eq "ADD") {
+            if ($null -eq $(iex $ConfigVarName)) {  iex $("{0} += @{{}}" -f $ConfigVarName) }        
+            iex $("{0} = add {0} {1}" -f $ConfigVarName, "`$wtds.Value")
+        } else { Write-Debug "Undefined operator."; exit }
+    } catch {
+        Write-Debug "Some wrong in WT default setting file, please check it."
+        exit
+    }
+}
+if ($null -eq $CONFIG[0]) {
+    $CONFIG[1] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json") 
+} else {
+    $CONFIG[0] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json")     
+}
+Copy-Item $($BackupPath + "settings_new.json") $SettingFileLocation
+Write-Debug "WT setting updated."
+exit
 
 # Change setting.
-$need_change = $CONFIG.profiles.list[$name2guid["PowerShell"][1]]
-$change_file = "./changed/c1.json"
+<# Settings for different session. #>
+$orgin = $CONFIG.profiles.list[$name2guid["PowerShell"][1]]
+$new = "./changed/c1.json"
 $CONFIG.profiles.list[$name2guid["PowerShell"][1]] = change $need_change $change_file
-$change_file = "./changed/c2.json"
-$CONFIG.schemes += @{}
-$CONFIG.schemes = add $CONFIG.schemes $change_file
 $need_change = $CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]]
 $change_file = "./changed/c3.json"
 $CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]] = change $need_change $change_file
 
+$change_file = "./changed/c2.json"
+$CONFIG.schemes += @{}
+$CONFIG.schemes = add $CONFIG.schemes $change_file
+
+
 # Update.
 if ($CONFIG[0] -eq $null) {
-    $CONFIG[1] | ConvertTo-Json -Depth 100 | Out-File $(-Join($ID_path, "settings_new.json")) 
+    $CONFIG[1] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json") 
 } else {
-    $CONFIG[0] | ConvertTo-Json -Depth 100 | Out-File $(-Join($ID_path, "settings_new.json"))     
+    $CONFIG[0] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json")     
 }
-Copy-Item $(-Join($ID_path, "settings_new.json")) $setting_file_loc
+Copy-Item $($BackupPath + "settings_new.json") $SettingFileLocation
+Write-Debug "WT setting updated."
