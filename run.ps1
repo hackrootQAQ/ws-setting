@@ -103,27 +103,3 @@ if ($null -eq $CONFIG[0]) {
 }
 Copy-Item $($BackupPath + "settings_new.json") $SettingFileLocation
 Write-Debug "WT setting updated."
-exit
-
-# Change setting.
-<# Settings for different session. #>
-$orgin = $CONFIG.profiles.list[$name2guid["PowerShell"][1]]
-$new = "./changed/c1.json"
-$CONFIG.profiles.list[$name2guid["PowerShell"][1]] = change $need_change $change_file
-$need_change = $CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]]
-$change_file = "./changed/c3.json"
-$CONFIG.profiles.list[$name2guid["Ubuntu-18.04"][1]] = change $need_change $change_file
-
-$change_file = "./changed/c2.json"
-$CONFIG.schemes += @{}
-$CONFIG.schemes = add $CONFIG.schemes $change_file
-
-
-# Update.
-if ($CONFIG[0] -eq $null) {
-    $CONFIG[1] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json") 
-} else {
-    $CONFIG[0] | ConvertTo-Json -Depth 100 | Out-File $($BackupPath + "settings_new.json")     
-}
-Copy-Item $($BackupPath + "settings_new.json") $SettingFileLocation
-Write-Debug "WT setting updated."
