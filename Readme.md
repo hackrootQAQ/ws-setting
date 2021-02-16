@@ -22,3 +22,10 @@ Additional instructions for `run.ps1`:
 * Use switch `-nb` to not backup the original configuration.
 
 ### How to customize
+
+There are two parts can be customized, one is the *WT's native configuration*, another one is about the *plug-in oh-my-posh*.
+
+* ***WT's native configuration***: Reference to file `\basic\default.ps1`.
+* ***plug-in oh-my-posh***: Reference to file `\basic\Theme\QAQ.psm1`.
+
+All of these two parts can be modified by yourself. You can change the setting file lacation in `CONSTANT.psm1`, which defines some read-only variables corresponding to customized information in class `SET`. Notice your new variable name should begin with `__`, but drop it while using.
